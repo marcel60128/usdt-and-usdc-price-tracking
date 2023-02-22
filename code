@@ -1,0 +1,24 @@
+const apiKey = 'YOUR_API_KEY';
+const usdSymbol = 'USD';
+const usdcSymbol = 'USDC';
+const usdtSymbol = 'USDT';
+
+// Make an API call to get the latest prices for USDC and USDT
+const fetchPrices = async () => {
+  const response = await fetch(`https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol=${usdcSymbol},${usdtSymbol}&convert=${usdSymbol}`, {
+    headers: {
+      'X-CMC_PRO_API_KEY': apiKey
+    }
+  });
+  const data = await response.json();
+  const prices = {};
+  prices[usdcSymbol] = data.data[usdcSymbol].quote[usdSymbol].price;
+  prices[usdtSymbol] = data.data[usdtSymbol].quote[usdSymbol].price;
+  return prices;
+};
+
+// Update the prices every 10 seconds
+setInterval(async () => {
+  const prices = await fetchPrices();
+  console.log(prices);
+}, 10000);
